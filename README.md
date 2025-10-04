@@ -5,7 +5,7 @@ Scars classification project. This is an ongoing project, the code is not clean 
 
 ## Installation
 1. Create conda environment
-```python
+```bash
 conda create --name image_classification python=3.12.7
 conda activate image_classification
 ```
@@ -13,7 +13,7 @@ conda activate image_classification
 2. Install pytorch using this [link](https://pytorch.org/get-started/locally/). This may differ depending on your os, and platform.
 
 3. Install requirements wtih
-```python
+```bash
 pip install -r requirements.txt
 ```
 
