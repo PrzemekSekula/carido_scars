@@ -1,0 +1,7 @@
+pytorch-lightning
+timm
+scikit-learn
+pillow
+torchmetrics
+pyyaml
+tensorboard
