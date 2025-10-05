@@ -12,7 +12,7 @@ conda activate image_classification
 
 2. Install pytorch using this [link](https://pytorch.org/get-started/locally/). This may differ depending on your os, and platform.
 
-3. Install requirements wtih
+3. Install the requirements with:
 ```bash
 pip install -r requirements.txt
 ```

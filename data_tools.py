@@ -45,10 +45,10 @@ class ImageDataModule(pl.LightningDataModule):
     def __init__(self, config):
         super().__init__()
         self.config = config
-        self.data_dir = self.config["data_dir"]
-        self.image_size = self.config["image_size"]
-        self.batch_size = self.config["batch_size"]
-        self.num_workers = self.config["num_workers"]
+        self.data_dir = self.config.data_dir
+        self.image_size = self.config.image_size
+        self.batch_size = self.config.batch_size
+        self.num_workers = self.config.num_workers
         self.class_weights = None # Initialize the attribute
         
         self.train_transform = transforms.Compose([
@@ -76,9 +76,12 @@ class ImageDataModule(pl.LightningDataModule):
         print(f"Found classes: {self.class_to_idx}")
         
         train_val_files, self.test_files = train_test_split(
-            all_files, test_size=self.config["test_split_size"], stratify=[f[1] for f in all_files], random_state=42
+            all_files, 
+            test_size=self.config.test_split_size, 
+            stratify=[f[1] for f in all_files], 
+            random_state=42
         )
-        val_size_adjusted = self.config["val_split_size"] / (1 - self.config["test_split_size"])
+        val_size_adjusted = self.config.val_split_size / (1 - self.config.test_split_size)
         self.train_files, self.val_files = train_test_split(
             train_val_files,
             test_size=val_size_adjusted,
@@ -86,7 +89,7 @@ class ImageDataModule(pl.LightningDataModule):
             random_state=42
         )
         
-        if self.config.get("use_class_weights", False):
+        if self.config.use_class_weights:
             train_labels = [label for _, label in self.train_files]
             class_counts = Counter(train_labels)
             

@@ -8,29 +8,45 @@ Last modified: 2025-10-04
 # %%
 
 import os
+import argparse
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
 from pytorch_lightning.loggers import TensorBoardLogger
 
 from data_tools import ImageDataModule
 from model import ImageClassifier
-from tools import load_config
+from tools import parse_with_config_file, log_args_to_tensorboard
 
 
 # %%
 
-def main(config, data_module, model):
-   
+def main(args):
+
+
     logger = TensorBoardLogger(
-        save_dir=".", # Saves logs in the current directory
-        name=config["log_dir"], # Creates a subfolder with this name
-        default_hp_metric=False # Optional: disables a default metric
-    )
+        os.path.join(args.log_dir, args.subdir_name), 
+        name=args.model_name
+        )
+    log_args_to_tensorboard(logger, args)
+
+    data_module = ImageDataModule(args)
+
+    # 1. Explicitly call setup() to calculate class weights
+    # This is needed because we require the weights before initializing the model
+    data_module.setup('fit')
+
+    # 2. Add the calculated weights to the config dictionary
+    # It will be None if use_class_weights was False
+    args.class_weights = data_module.class_weights
+    
+    # 3. Now initialize the model with the updated config
+    model = ImageClassifier(args)
+
 
     checkpoint_callback = ModelCheckpoint(
         monitor='val_acc', 
-        dirpath='checkpoints/', 
-        filename=f'{config["model_name"]}-best-checkpoint', 
+        dirpath=os.path.join(args.checkpoint_dir, args.subdir_name), 
+        filename=f'{args.model_name}-best-checkpoint', 
         save_top_k=1, 
         mode='max'
     )
@@ -42,7 +58,7 @@ def main(config, data_module, model):
     )
     
     trainer = pl.Trainer(
-        max_epochs=config["num_epochs"], 
+        max_epochs=args.num_epochs, 
         accelerator="auto", 
         callbacks=[checkpoint_callback, early_stopping_callback],
         logger=logger 
@@ -61,13 +77,6 @@ def main(config, data_module, model):
 
     # 2. Define the path for the results file inside the specific run's log folder
     results_path = os.path.join(trainer.logger.log_dir, "results.txt")
-    
-    # 3. Write the results to the file
-    with open(results_path, 'w') as f:
-        f.write("--- Final Test Metrics ---\n")
-        # trainer.test() returns a list of dictionaries, we take the first one
-        for key, value in test_results[0].items():
-            f.write(f"{key}: {value}\n")
             
 
     print (test_results)            
@@ -78,24 +87,9 @@ def main(config, data_module, model):
 
 if __name__ == '__main__':    
     pl.seed_everything(42)
-    config = load_config('./configs/xception_leg.yaml')
-    data_module = ImageDataModule(config)
-
-    # 1. Explicitly call setup() to calculate class weights
-    # This is needed because we require the weights before initializing the model
-    data_module.setup('fit')
-
-    # 2. Add the calculated weights to the config dictionary
-    # It will be None if use_class_weights was False
-    config['class_weights'] = data_module.class_weights
-    
-    # 3. Now initialize the model with the updated config
-    model = ImageClassifier(config)
-
-    #print (model)
-
-# %%
-
-if __name__ == '__main__':
-    main(config, data_module, model)
-
+    parser = argparse.ArgumentParser(
+        description='Trains the model. Defaults are loaded from configs.yaml, '
+        'from the defaults section. to Change the config, use the --configs argument.'
+    )
+    parser.add_argument("--configs", nargs="+", help="List of named configs from configs.yaml to load.")
+    main(parse_with_config_file(parser, defaults_name="defaults")) 

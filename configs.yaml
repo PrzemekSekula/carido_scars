@@ -1,0 +1,46 @@
+defaults:
+  # --- Directories ---
+  data_dir: "..\\Data\\Leg" # <-- Set your data path here
+  log_dir: "logs" 
+  checkpoint_dir: "checkpoints"
+  subdir_name: "legs\\xception" # Will be added to the log_dir and checkpoint_dir
+
+  # --- Model Configuration ---
+  model_name: "xception"
+  num_classes: 2
+  image_size: [299, 299] # YAML uses lists for tuples
+
+  # --- Training Hyperparameters ---
+  num_epochs: 40
+  batch_size: 32
+  learning_rate: 0.001 # Initial LR for the classifier head
+  use_class_weights: False
+
+  # --- Data Splitting and Loading ---
+  test_split_size: 0.20
+  val_split_size: 0.20
+  num_workers: 0 # Set to 0 for Windows, >0 for Linux/macOS
+
+  # --- Fine-Tuning Strategy ---
+  do_finetune: True
+  warmup_epochs: 5
+  unfreeze_layers: 6
+  finetune_lr: 0.00001 # A much smaller LR for the backbone
+
+xception_leg:
+  data_dir: "..\\Data\\Leg"
+  subdir_name: "legs\\xception" 
+  model_name: "xception"
+  num_epochs: 40
+  batch_size: 32
+  learning_rate: 0.001
+  use_class_weights: False
+
+xception_stereotomy:
+  data_dir: "..\\Data\\Stereotomy"
+  subdir_name: "stereotomy\\xception"
+  model_name: "xception"
+  num_epochs: 40
+  batch_size: 32
+  learning_rate: 0.001
+  use_class_weights: False
