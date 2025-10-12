@@ -44,3 +44,25 @@ xception_stereotomy:
   batch_size: 32
   learning_rate: 0.001
   use_class_weights: False
+
+xception_all:
+  data_dir: "..\\Data\\All"
+  subdir_name: "All\\xception"
+  model_name: "xception"
+  num_epochs: 20
+  batch_size: 32
+  learning_rate: 0.001
+  use_class_weights: True
+
+tf_efficientnet_b4_all:
+  data_dir: "..\\Data\\All"
+  subdir_name: "All\\tf_efficientnet_b4"
+  model_name: "tf_efficientnet_b4"
+  num_epochs: 20
+  batch_size: 20  # Adjusted batch size for B4
+  learning_rate: 0.0005  # Slightly lower LR for larger model
+  use_class_weights: True
+  image_size: [380, 380]  # Optimal input size for tf_efficientnet_b4
+  warmup_epochs: 3  # Shorter warmup for larger model
+  unfreeze_layers: 4  # Fewer layers to unfreeze for larger model
+  finetune_lr: 0.000005  # Even smaller LR for backbone

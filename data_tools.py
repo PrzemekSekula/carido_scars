@@ -81,6 +81,7 @@ class ImageDataModule(pl.LightningDataModule):
             stratify=[f[1] for f in all_files], 
             random_state=42
         )
+
         val_size_adjusted = self.config.val_split_size / (1 - self.config.test_split_size)
         self.train_files, self.val_files = train_test_split(
             train_val_files,
@@ -88,7 +89,7 @@ class ImageDataModule(pl.LightningDataModule):
             stratify=[f[1] for f in train_val_files],
             random_state=42
         )
-        
+
         if self.config.use_class_weights:
             train_labels = [label for _, label in self.train_files]
             class_counts = Counter(train_labels)
