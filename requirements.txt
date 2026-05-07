@@ -7,3 +7,5 @@ pyyaml
 tensorboard
 pandas
 numpy
+opencv-python
+matplotlib
