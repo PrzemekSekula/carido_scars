@@ -211,3 +211,6 @@ logs/
 checkpoints/
 test_results/
 paper/
+data/
+./claude
+CLAUDE.md
