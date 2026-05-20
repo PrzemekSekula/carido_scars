@@ -9,3 +9,4 @@ pandas
 numpy
 opencv-python
 matplotlib
+ultralytics
