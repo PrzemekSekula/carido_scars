@@ -210,7 +210,8 @@ __marimo__/
 logs/
 checkpoints/
 test_results/
-paper/
+initial_paper/
 data/
 .claude/
 CLAUDE.md
+YOLO/runs
