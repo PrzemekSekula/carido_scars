@@ -12,7 +12,7 @@ class YOLOAlgorithm:
         """
         self.model = YOLO(model_variant)
 
-    def train(self, data_yaml_path, epochs=100, imgsz=640, batch=16, project='YOLO_runs', name='scar_detection'):
+    def train(self, data_yaml_path, epochs=100, imgsz=640, batch=16, project='YOLO_runs', name='scar_detection', device=None):
         """
         Train the YOLO model on a custom dataset.
         :param data_yaml_path: Path to the data.yaml file defining the dataset.
@@ -21,6 +21,7 @@ class YOLOAlgorithm:
         :param batch: Batch size.
         :param project: Directory to save results.
         :param name: Name of the experiment.
+        :param device: Device to run training on (e.g. '0' or 'cpu').
         """
         print(f"Starting training with dataset: {data_yaml_path}")
         results = self.model.train(
@@ -29,11 +30,12 @@ class YOLOAlgorithm:
             imgsz=imgsz,
             batch=batch,
             project=os.path.abspath(project),
-            name=name
+            name=name,
+            device=device
         )
         return results
-
-    def run_inference(self, source, conf=0.25, save=True, project='YOLO_inference', name='results'):
+ 
+    def run_inference(self, source, conf=0.25, save=True, project='YOLO_inference', name='results', device=None):
         """
         Run inference on images or videos.
         :param source: Path to image, folder, or video.
@@ -41,6 +43,7 @@ class YOLOAlgorithm:
         :param save: Whether to save the annotated results.
         :param project: Directory to save inference results.
         :param name: Name of the inference run.
+        :param device: Device to run inference on.
         """
         print(f"Running inference on: {source}")
         results = self.model.predict(
@@ -48,24 +51,27 @@ class YOLOAlgorithm:
             conf=conf,
             save=save,
             project=os.path.abspath(project),
-            name=name
+            name=name,
+            device=device
         )
         return results
-
-    def validate(self, data_yaml_path, imgsz=640, project='YOLO/runs/scar_detection', name='evaluation'):
+ 
+    def validate(self, data_yaml_path, imgsz=640, project='YOLO/runs/scar_detection', name='evaluation', device=None):
         """
         Validate the model on a dataset.
         :param data_yaml_path: Path to the data.yaml file.
         :param imgsz: Image size.
         :param project: Directory to save results.
         :param name: Name of the evaluation run.
+        :param device: Device to run validation on.
         """
         print(f"Validating model on: {data_yaml_path}")
         results = self.model.val(
             data=data_yaml_path,
             imgsz=imgsz,
             project=os.path.abspath(project),
-            name=name
+            name=name,
+            device=device
         )
         return results
 
