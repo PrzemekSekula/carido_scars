@@ -11,7 +11,7 @@ import os
 from pathlib import Path
 
 # Add the root directory to sys.path
-root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'initial_experiments'))
 if root_dir not in sys.path:
     sys.path.append(root_dir)
 
